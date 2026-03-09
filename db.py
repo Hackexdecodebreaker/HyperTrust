@@ -26,7 +26,13 @@ def close_db(e=None):
 
 
 def init_db(app):
-    os.makedirs(os.path.dirname(app.config["DB_PATH"]), exist_ok=True)
+    db_dir = os.path.dirname(app.config["DB_PATH"])
+    if db_dir and not os.path.exists(db_dir):
+        try:
+            os.makedirs(db_dir, exist_ok=True)
+        except Exception:
+            pass
+            
     with app.app_context():
         db = get_db()
         schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")

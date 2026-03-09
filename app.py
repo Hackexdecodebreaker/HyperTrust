@@ -3,6 +3,9 @@ app.py — HyperTrust Flask Application Entry Point
 ==================================================
 ABE-Based Smart Network Access Control for Campus Network Resources
 """
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from flask import Flask, render_template
 from config import Config

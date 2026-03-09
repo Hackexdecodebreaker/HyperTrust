@@ -8,11 +8,12 @@ import secrets
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", secrets.token_hex(32))
     
-    # On Vercel, the only writable directory is /tmp
-    if os.environ.get("VERCEL"):
-        DB_PATH = "/tmp/hypertrust.db"
+    # Check if the execution directory is writable (Vercel is read-only)
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    if os.access(base_dir, os.W_OK):
+        DB_PATH = os.path.join(base_dir, "instance", "hypertrust.db")
     else:
-        DB_PATH = os.path.join(os.path.dirname(__file__), "instance", "hypertrust.db")
+        DB_PATH = "/tmp/hypertrust.db"
         
     ADMIN_USERNAME = "admin"
     ADMIN_PASSWORD = "admin123"
