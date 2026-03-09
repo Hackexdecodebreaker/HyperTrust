@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Access Logs{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-between align-items-center">
+    <div>
+        <h2><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg> Access Logs</h2>
+        <p>All network access attempts with cryptographic verification results</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn-outline-ht">&larr; Dashboard</a>
+</div>
+
+<div class="glass-card p-6">
+    {% if logs %}
+    <div style="overflow-x:auto;">
+        <table class="ht-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Department</th>
+                    <th>Role</th>
+                    <th>Result</th>
+                    <th>Reason</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td class="text-muted-ht">{{ log.id }}</td>
+                    <td>
+                        <strong>{{ log.name }}</strong>
+                        <div class="text-muted-ht">@{{ log.username }}</div>
+                    </td>
+                    <td>{{ log.department }}</td>
+                    <td><span class="badge-attr">{{ log.role }}</span></td>
+                    <td>
+                        {% if log.success %}
+                        <span class="badge-granted"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Granted</span>
+                        {% else %}
+                        <span class="badge-denied"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg> Denied</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size:0.78rem;color:var(--text-secondary);">{{ log.reason or '—' }}</td>
+                    <td class="mono text-muted-ht" style="font-size:0.78rem;">{{ log.attempt_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center" style="padding:60px 0;color:var(--text-muted);">
+        <div style="font-size:3rem;margin-bottom:12px;">📭</div>
+        <p>No access attempts have been recorded yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

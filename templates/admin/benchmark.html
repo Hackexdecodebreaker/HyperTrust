@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Performance Benchmark{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>⚡ Performance Benchmark</h2>
+    <p>CP-ABE encryption and decryption timing vs. attribute count</p>
+</div>
+
+<div class="glass-card p-6 mb-4">
+    <div class="section-title"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg> Benchmark Results</div>
+    <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:20px;">
+        Timed using <code style="color:var(--accent-cyan)">time.perf_counter()</code>. Each run encrypts a 32-byte AES
+        key (representative of a real WiFi token key) under policies of varying attribute counts.
+    </p>
+
+    {% set max_enc = results | map(attribute='enc_time_ms') | max %}
+    {% set max_dec = results | map(attribute='dec_time_ms') | max %}
+
+    <div style="overflow-x:auto;">
+        <table class="ht-table">
+            <thead>
+                <tr>
+                    <th># Attributes</th>
+                    <th>Encryption Time (ms)</th>
+                    <th>Enc. Visual</th>
+                    <th>Decryption Time (ms)</th>
+                    <th>Dec. Visual</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td>
+                        <strong style="font-size:1.1rem;color:var(--accent-blue);">{{ r.attributes }}</strong>
+                        <div class="text-muted-ht">attributes</div>
+                    </td>
+                    <td>
+                        <span style="font-size:1rem;font-weight:700;color:var(--accent-cyan);">{{ r.enc_time_ms
+                            }}</span>
+                        <span class="text-muted-ht"> ms</span>
+                    </td>
+                    <td style="min-width:120px;">
+                        <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:6px;width:100%;">
+                            <div class="bench-bar"
+                                style="width:{{ [((r.enc_time_ms / max_enc) * 100), 100] | min | round }}%"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-size:1rem;font-weight:700;color:var(--accent-purple);">{{ r.dec_time_ms
+                            }}</span>
+                        <span class="text-muted-ht"> ms</span>
+                    </td>
+                    <td style="min-width:120px;">
+                        <div style="background:rgba(255,255,255,0.05);border-radius:3px;height:6px;width:100%;">
+                            <div class="bench-bar"
+                                style="width:{{ [((r.dec_time_ms / max_dec) * 100), 100] | min | round }}%;background:linear-gradient(90deg,var(--accent-purple),var(--accent-cyan));">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if r.success %}
+                        <span class="badge-granted"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> OK</span>
+                        {% else %}
+                        <span class="badge-denied"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg> Fail</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="glass-card p-6">
+        <div class="section-title"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M21.5 1h-19C1.1 1 0 2.1 0 3.5v17C0 21.9 1.1 23 2.5 23h19c1.4 0 2.5-1.1 2.5-2.5v-17C24 2.1 22.9 1 21.5 1M6 16.5c-1.9 0-3.5-1.6-3.5-3.5S4.1 9.5 6 9.5 9.5 11.1 9.5 13 7.9 16.5 6 16.5m12 0c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5"/></svg> Methodology</div>
+        <ul style="font-size:0.82rem;color:var(--text-secondary);line-height:2;padding-left:16px;">
+            <li>Token: 32-byte AES-256 key (actual payload in hybrid model)</li>
+            <li>Policy: AND chain of N synthetic attributes</li>
+            <li>KeyGen: Matching user key generated per test</li>
+            <li>Timing: <code style="color:var(--accent-cyan)">time.perf_counter()</code> in Python</li>
+            <li>Runs: 1 iteration per attribute count (extend for production)</li>
+        </ul>
+    </div>
+    <div class="glass-card p-6">
+        <div class="section-title">📈 Analysis</div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.8;">
+            CP-ABE encryption time scales with the number of attributes in the policy. Each additional attribute
+            requires an extra HKDF derivation. Decryption time is bounded by the minimum satisfying attribute set —
+            typically sub-millisecond for practical policies (≤10 attributes). This confirms the system is viable for
+            real-time campus network access decisions.
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HyperTrust{% endblock %} — ABE Smart Access Control</title>
+  <meta name="description" content="Attribute-Based Encrypted Smart Access Control System for Campus Networks">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for category, msg in messages %}
+    <div class="flash-msg {{ category }}" role="alert">
+      <span>
+        {% if category == 'success' %}<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>{% elif category == 'danger' %}<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>{% elif category == 'warning' %}<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>{% else %}<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>{% endif %}
+      </span>
+      <span>{{ msg }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+{% if session.get('user_id') %}
+<!-- ── Sidebar ─────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2H9V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg></div>
+    <h1>HyperTrust</h1>
+    <small>ABE Access Control</small>
+  </div>
+
+  <nav class="sidebar-nav">
+    {% if session.get('is_admin') %}
+    <div class="nav-section-label">Admin</div>
+    <a href="{{ url_for('admin.dashboard') }}" id="nav-admin-home">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span><span>Dashboard</span>
+    </a>
+    <a href="{{ url_for('admin.users') }}" id="nav-admin-users">
+      <span class="nav-icon">👥</span><span>Users</span>
+    </a>
+    <a href="{{ url_for('admin.logs') }}" id="nav-admin-logs">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></span><span>Access Logs</span>
+    </a>
+    <a href="{{ url_for('admin.policy') }}" id="nav-admin-policy">
+      <span class="nav-icon">📜</span><span>Policy</span>
+    </a>
+    <a href="{{ url_for('admin.benchmark') }}" id="nav-admin-bench">
+      <span class="nav-icon">⚡</span><span>Benchmark</span>
+    </a>
+    {% else %}
+    <div class="nav-section-label">Network</div>
+    <a href="{{ url_for('user.dashboard') }}" id="nav-user-home">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span><span>Dashboard</span>
+    </a>
+    <a href="{{ url_for('user.logs') }}" id="nav-user-logs">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></span><span>My Access Logs</span>
+    </a>
+    {% endif %}
+  </nav>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">
+      {{ session.get('name', 'U')[0].upper() }}
+    </div>
+    <div class="user-info">
+      <small>{% if session.get('is_admin') %}Administrator{% else %}User{% endif %}</small>
+      <span>{{ session.get('name', session.get('username', '')) }}</span>
+    </div>
+  </div>
+</aside>
+{% endif %}
+
+<!-- ── Main Content ───────── -->
+<main class="{% if session.get('user_id') %}main-content{% endif %}">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ── Logout shortcut ───── -->
+{% if session.get('user_id') %}
+<div style="position:fixed;bottom:20px;right:20px;z-index:999">
+  <a href="{{ url_for('auth.logout') }}" class="btn-outline-ht" style="padding:8px 14px;font-size:0.78rem;">
+    🚪 <span>Logout</span>
+  </a>
+</div>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

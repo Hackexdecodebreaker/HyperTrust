@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+            <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg> My Dashboard</h2>
+    <p>Welcome back, <strong>{{ user.name }}</strong> — {{ user.department }} · {{ user.role }}</p>
+</div>
+
+<div class="grid-2">
+    <!-- Access Request Card -->
+    <div class="glass-card access-card p-6 text-center">
+        <div class="wifi-icon-wrap"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                <path
+                    d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.36-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" />
+            </svg></div>
+        <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:8px;">Campus WiFi Access</h3>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:24px;">
+            Request network access. Your CP-ABE private key will attempt to decrypt the access token using your
+            attributes.
+        </p>
+
+        <form method="POST" action="{{ url_for('user.request_access') }}">
+            <button type="submit" id="requestAccessBtn" class="btn-success-ht w-100"
+                style="justify-content:center;padding:14px;font-size:0.95rem;">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <path
+                        d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+                </svg> Request WiFi Access
+            </button>
+        </form>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-glass);">
+            <p
+                style="font-size:0.72rem;color:var(--text-muted);margin-bottom:8px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">
+                Active Policy</p>
+            <div class="policy-box" style="text-align:left;font-size:0.72rem;">{{ policy }}</div>
+        </div>
+    </div>
+
+    <!-- User Attributes -->
+    <div class="glass-card p-6">
+        <div class="section-title"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                <path
+                    d="M12.65 10A5.99 5.99 0 007 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 005.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+            </svg> My ABE Attributes</div>
+
+        {% if attributes %}
+        <div style="margin-bottom:20px;">
+            {% for attr in attributes %}
+            <span class="badge-attr" style="font-size:0.8rem;padding:5px 14px;">{{ attr }}</span>
+            {% endfor %}
+        </div>
+
+        <div
+            style="background:rgba(0,0,0,0.2);border:1px solid var(--border-glass);border-radius:10px;padding:16px;margin-bottom:16px;">
+            <p style="font-size:0.75rem;color:var(--text-secondary);line-height:1.7;">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <path
+                        d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2H9V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z" />
+                </svg> <strong style="color:var(--text-primary);">How it works:</strong> Your private key encodes these
+                attributes
+                using CP-ABE KeyGen(). When you request access, the system CP-ABE Encrypt()s a WiFi token under the
+                active policy, then your key attempts Decrypt(). Access is granted
+                <em style="color:var(--accent-cyan)">cryptographically</em> — not just logically.
+            </p>
+        </div>
+
+        <!-- Policy check preview -->
+        <div class="section-title" style="margin-top:4px;"><svg viewBox="0 0 24 24" width="1em" height="1em"
+                fill="currentColor">
+                <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
+            </svg> Policy Evaluation</div>
+        {% set attrs_set = attributes | map('lower') | list %}
+
+        {% set has_cse = 'dept:cse' in attrs_set %}
+        {% set has_paid = 'paid:true' in attrs_set %}
+        {% set has_admin = 'role:networkadmin' in attrs_set %}
+        {% set has_it = 'role:itsupport' in attrs_set %}
+        {% set path1 = has_cse and has_paid %}
+        {% set path2 = has_admin or has_it %}
+        {% set will_pass = path1 or path2 %}
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;">
+                <span>{{ ('<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none"
+                        stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg>' if path1 else '<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor"
+                        fill="none" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>')|safe }}</span>
+                <span style="color:var(--text-secondary);">Path 1: dept:cse <strong>AND</strong> paid:true</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;">
+                <span>{{ ('<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none"
+                        stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg>' if path2 else '<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor"
+                        fill="none" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>')|safe }}</span>
+                <span style="color:var(--text-secondary);">Path 2: role:networkadmin <strong>OR</strong>
+                    role:itsupport</span>
+            </div>
+            <style>
+                .policy-eval-box {
+                    margin-top: 6px;
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                }
+
+                .policy-eval-box.pass {
+                    background: rgba(34, 211, 165, 0.1);
+                    border: 1px solid rgba(34, 211, 165, 0.25);
+                }
+
+                .policy-eval-box.fail {
+                    background: rgba(247, 89, 106, 0.1);
+                    border: 1px solid rgba(247, 89, 106, 0.25);
+                }
+
+                .policy-eval-text {
+                    font-size: 0.85rem;
+                }
+
+                .policy-eval-text.pass {
+                    color: var(--accent-green);
+                }
+
+                .policy-eval-text.fail {
+                    color: var(--accent-red);
+                }
+            </style>
+            <div class="policy-eval-box {% if will_pass %}pass{% else %}fail{% endif %}">
+                <strong class="policy-eval-text {% if will_pass %}pass{% else %}fail{% endif %}">
+                    {{ ('<svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none"
+                        stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg> You should be granted access' if will_pass else '<svg viewBox="0 0 24 24" width="1em"
+                        height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg> Access will be denied')|safe }}
+                </strong>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="text-center" style="padding:30px 0;color:var(--text-muted);">
+            <div style="font-size:2rem;margin-bottom:8px;"><svg viewBox="0 0 24 24" width="1em" height="1em"
+                    stroke="currentColor" fill="none" stroke-width="2">
+                    <path
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg></div>
+            <p style="font-size:0.85rem;">No ABE attributes assigned. Contact your administrator.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Secure Portals -->
+    <div class="glass-card p-6" style="grid-column: 1 / -1; margin-top: 10px;">
+        <div class="section-title">🔒 Secure Portals (ABE Gated)</div>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px;">
+            The following portals enforce the CP-ABE policy continuously. If your current attributes satisfy the active
+            policy, you will be granted entry cryptographically.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- Portal 1 -->
+            <div
+                style="background: rgba(0,0,0,0.25); border: 1px solid var(--border-glass); border-radius: 10px; padding: 20px;">
+                <h4 style="margin-bottom: 10px; color: var(--accent-blue);"><svg viewBox="0 0 24 24" width="1em"
+                        height="1em" fill="currentColor">
+                        <path
+                            d="M21.5 1h-19C1.1 1 0 2.1 0 3.5v17C0 21.9 1.1 23 2.5 23h19c1.4 0 2.5-1.1 2.5-2.5v-17C24 2.1 22.9 1 21.5 1M6 16.5c-1.9 0-3.5-1.6-3.5-3.5S4.1 9.5 6 9.5 9.5 11.1 9.5 13 7.9 16.5 6 16.5m12 0c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5" />
+                    </svg> Research Data Portal</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Access highly classified
+                    research datasets.</p>
+                <a href="{{ url_for('user.secure_portal', portal_name='research_data') }}" class="btn-success-ht"
+                    style="display: inline-block; padding: 8px 16px; font-size: 0.85rem; background: rgba(34,211,165,0.15); border: 1px solid rgba(34,211,165,0.3);">Attempt
+                    Access &rarr;</a>
+            </div>
+
+            <!-- Portal 2 -->
+            <div
+                style="background: rgba(0,0,0,0.25); border: 1px solid var(--border-glass); border-radius: 10px; padding: 20px;">
+                <h4 style="margin-bottom: 10px; color: var(--accent-purple);"><svg viewBox="0 0 24 24" width="1em"
+                        height="1em" fill="currentColor">
+                        <path
+                            d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
+                    </svg> Confidential Docs</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Access restricted
+                    institutional documents and ledgers.</p>
+                <a href="{{ url_for('user.secure_portal', portal_name='confidential_docs') }}" class="btn-success-ht"
+                    style="display: inline-block; padding: 8px 16px; font-size: 0.85rem; background: rgba(34,211,165,0.15); border: 1px solid rgba(34,211,165,0.3);">Attempt
+                    Access &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent log -->
+{% if recent_logs %}
+<div class="glass-card p-6 mt-4">
+    <div class="section-title d-flex justify-between" style="margin-bottom:14px;">
+        <span><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                <path
+                    d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+            </svg> Recent Access History</span>
+        <a href="{{ url_for('user.logs') }}"
+            style="font-size:0.75rem;color:var(--accent-blue);text-decoration:none;">View all →</a>
+    </div>
+    <div style="overflow-x:auto;">
+        <table class="ht-table">
+            <thead>
+                <tr>
+                    <th>Result</th>
+                    <th>Reason</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_logs %}
+                <tr>
+                    <td>{% if log.success %}<span class="badge-granted"><svg viewBox="0 0 24 24" width="1em"
+                                height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                                <path d="M5 13l4 4L19 7" />
+                            </svg> Granted</span>{% else %}<span class="badge-denied"><svg viewBox="0 0 24 24"
+                                width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg> Denied</span>{% endif %}</td>
+                    <td style="font-size:0.8rem;color:var(--text-secondary);">{{ log.reason or '—' }}</td>
+                    <td class="mono text-muted-ht" style="font-size:0.78rem;">{{ log.attempt_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

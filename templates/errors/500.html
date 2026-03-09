@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}500 Server Error{% endblock %}
+{% block content %}
+<div class="login-page">
+    <div class="glass-card login-card text-center" style="padding:48px 36px;">
+        <div style="font-size:4rem;margin-bottom:16px;"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+        <h2 style="font-size:1.8rem;font-weight:800;color:var(--accent-red);margin-bottom:8px;">500</h2>
+        <h3 style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:12px;">Internal Server Error
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:28px;">
+            Something went wrong on our end. Please try again or contact your administrator.
+        </p>
+        <a href="{{ url_for('auth.index') }}" class="btn-outline-ht" style="justify-content:center;">&larr; Return Home</a>
+    </div>
+</div>
+{% endblock %}

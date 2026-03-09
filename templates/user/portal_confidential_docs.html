@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Confidential Documents{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg> Confidential Documents</h2>
+    <p>Classified Institutional Archives</p>
+</div>
+
+<div class="glass-card p-6" style="border-top: 4px solid var(--accent-purple);">
+    <h3 style="margin-bottom: 20px;">Secured Archives</h3>
+
+    <div
+        style="background: rgba(34,211,165,0.1); border: 1px solid rgba(34,211,165,0.3); padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+        <span style="font-size: 1.2rem; margin-right: 10px;"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2H9V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg></span>
+        <strong style="color: var(--accent-green);">Access Verified Cryptographically!</strong>
+        Your user attributes successfully decrypted the portal access token.
+    </div>
+
+    <p style="color: var(--text-secondary); line-height: 1.6;">
+        You are currently viewing sensitive administrative and architectural documents. Distribution of these materials
+        outside of the institutional network is strictly prohibited.
+    </p>
+
+    <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div
+            style="padding: 15px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 8px;">
+            <h4>Network Topology Map</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Last updated: 2026-03-01</p>
+        </div>
+        <div
+            style="padding: 15px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 8px;">
+            <h4>IT Budget 2026</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Classified until Q3</p>
+        </div>
+        <div
+            style="padding: 15px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 8px;">
+            <h4>Server Credentials</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Strict Access Only</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('user.dashboard') }}" class="btn-success-ht"
+            style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">&larr; Return to
+            Dashboard</a>
+    </div>
+</div>
+{% endblock %}
