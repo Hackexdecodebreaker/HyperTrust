@@ -50,6 +50,8 @@ def create_app():
     def server_error(e):
         return render_template("errors/500.html"), 500
 
+    return app
+
 # Vercel requires the app variable to be exposed globally
 app = create_app()
 
