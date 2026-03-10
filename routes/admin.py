@@ -20,6 +20,9 @@ admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        if "user_id" not in session:
+            flash("Session expired or invalid. Please log in again.", "warning")
+            return redirect(url_for("auth.login"))
         if not session.get("is_admin"):
             return render_template("errors/403.html"), 403
         return f(*args, **kwargs)
