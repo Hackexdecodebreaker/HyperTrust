@@ -6,7 +6,7 @@ Instead of traditional access control lists (ACLs) or role-based access control 
 
 ---
 
-## 🏗️ Architecture & Core Components
+## Architecture & Core Components
 
 ### 1. The CP-ABE Simulation Engine (`abe_engine.py`)
 This file simulates a pure-Python Attribute-Based Encryption engine. Real ABE uses complex bilinear pairings over elliptic curves, but this engine substitutes standard HKDF (HMAC-based Key Derivation Function) symmetric cryptography and mathematical XOR masking to perfectly replicate the logical constraints of ABE.
@@ -39,7 +39,7 @@ The system utilizes a SQLite database for lightweight, rapid access control stat
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 1. Ensure you have Python installed, and activate the local virtual environment:
    ```cmd
@@ -62,7 +62,7 @@ The system utilizes a SQLite database for lightweight, rapid access control stat
 
 ---
 
-## 🔑 Accessing the Portals
+##  Accessing the Portals
 
 We have included two highly secure portals strictly bound by CP-ABE encryption. 
 
