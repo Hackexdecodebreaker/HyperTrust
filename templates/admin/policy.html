@@ -3,14 +3,25 @@
 
 {% block content %}
 <div class="page-header">
-    <h2>📜 Access Policy</h2>
+    <h2 style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="24" height="24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+        </svg> Access Policy</h2>
     <p>Current CP-ABE policy governing network access</p>
 </div>
 
 <div class="grid-2">
     <!-- Active Policy -->
     <div class="glass-card p-6">
-        <div class="section-title">🔒 Active WiFi Policy</div>
+        <div class="section-title"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg> Active WiFi Policy</div>
 
         <div class="policy-box">{{ active_policy }}</div>
 
@@ -25,12 +36,23 @@
 
     <!-- Policy Explanation -->
     <div class="glass-card p-6">
-        <div class="section-title">🧠 Policy Breakdown</div>
+        <div class="section-title"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20"></path>
+                <path d="m17 5-5-3-5 3"></path>
+                <path d="m17 19-5 3-5-3"></path>
+                <path d="M2 12h20"></path>
+                <path d="m5 7 3-5 3 5"></path>
+                <path d="m5 17 3 5 3-5"></path>
+            </svg> Policy Breakdown</div>
 
         <div style="display:flex;flex-direction:column;gap:14px;">
             <div
                 style="background:rgba(34,211,165,0.07);border:1px solid rgba(34,211,165,0.2);border-radius:10px;padding:16px;">
-                <p style="font-size:0.78rem;font-weight:700;color:var(--accent-green);margin-bottom:8px;"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Path 1 —
+                <p style="font-size:0.78rem;font-weight:700;color:var(--accent-green);margin-bottom:8px;"><svg
+                        viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg> Path 1 —
                     Student Access</p>
                 <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.6;">
                     User must have <span class="badge-attr">dept:cse</span> <strong>AND</strong> <span
@@ -40,7 +62,10 @@
             <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);font-weight:700;">— OR —</div>
             <div
                 style="background:rgba(79,142,247,0.07);border:1px solid rgba(79,142,247,0.2);border-radius:10px;padding:16px;">
-                <p style="font-size:0.78rem;font-weight:700;color:var(--accent-blue);margin-bottom:8px;"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Path 2 —
+                <p style="font-size:0.78rem;font-weight:700;color:var(--accent-blue);margin-bottom:8px;"><svg
+                        viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg> Path 2 —
                     Admin Override</p>
                 <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.6;">
                     User must have <span class="badge-attr">role:networkadmin</span> <strong>OR</strong> <span
@@ -49,7 +74,11 @@
             </div>
 
             <div style="margin-top:10px;border-top:1px solid var(--border-glass);padding-top:14px;">
-                <p style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2H9V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg> Collusion
+                <p style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;"><svg
+                        viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                        <path
+                            d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2H9V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z" />
+                    </svg> Collusion
                     Resistance</p>
                 <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">
                     Each user's private key is derived with a unique salt. Even if User A (dept:cse, paid:false)
@@ -63,16 +92,23 @@
 
 <!-- ABE Algorithms Reference -->
 <div class="glass-card p-6 mt-4">
-    <div class="section-title"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg> CP-ABE Algorithm Overview</div>
+    <div class="section-title"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+            <path
+                d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" />
+        </svg> CP-ABE Algorithm Overview</div>
     <div class="grid-2" style="gap:16px;">
         {% set algos = [
-        ('🔧 Setup()', 'Generates system-wide Public Key (PK) and Master Secret Key (MSK). MSK is stored server-side
+        ('Setup()', 'Generates system-wide Public Key (PK) and Master Secret Key (MSK). MSK is stored server-side
         only and is never exposed.', 'blue'),
-        ('🗝️ KeyGen(PK, MSK, Attrs)', 'Generates a user private key bound to their attributes. Each key has a unique
+        ('KeyGen(PK, MSK, Attrs)', 'Generates a user private key bound to their attributes. Each key has a unique
         salt to prevent collusion.', 'purple'),
-        ('🔒 Encrypt(PK, Data, Policy)', 'Encrypts data under a boolean access policy. Only users satisfying the policy
+        ('Encrypt(PK, Data, Policy)', 'Encrypts data under a boolean access policy. Only users satisfying the policy
         can decrypt.', 'cyan'),
-        ('<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg> Decrypt(PK, SK, CT)', 'Attempts decryption — succeeds only if the user\'s attributes satisfy the ciphertext
+        ('<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+            <path
+                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
+        </svg> Decrypt(PK, SK, CT)', 'Attempts decryption — succeeds only if the user\'s attributes satisfy the
+        ciphertext
         policy.', 'green')
         ] %}
         {% for name, desc, color in algos %}

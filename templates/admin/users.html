@@ -4,7 +4,13 @@
 {% block content %}
 <div class="page-header d-flex justify-between align-items-center">
     <div>
-        <h2>👥 Registered Users</h2>
+        <h2 style="display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" width="24" height="24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg> Registered Users</h2>
         <p>All users with their ABE attributes and key status</p>
     </div>
     <a href="{{ url_for('admin.dashboard') }}" class="btn-outline-ht">&larr; Back to Dashboard</a>
@@ -39,9 +45,15 @@
                     <td>{{ u.role }}</td>
                     <td>
                         {% if u.paid_dues %}
-                        <span class="badge-granted"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Paid</span>
+                        <span class="badge-granted"><svg viewBox="0 0 24 24" width="1em" height="1em"
+                                stroke="currentColor" fill="none" stroke-width="2">
+                                <path d="M5 13l4 4L19 7" />
+                            </svg> Paid</span>
                         {% else %}
-                        <span class="badge-denied"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg> Unpaid</span>
+                        <span class="badge-denied"><svg viewBox="0 0 24 24" width="1em" height="1em"
+                                stroke="currentColor" fill="none" stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg> Unpaid</span>
                         {% endif %}
                     </td>
                     <td>
@@ -55,14 +67,26 @@
                     </td>
                     <td>
                         {% if attr_map.get(u.id) %}
-                        <span style="color:var(--accent-green);font-size:0.8rem;"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12.65 10A5.99 5.99 0 007 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 005.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Issued</span>
+                        <span style="color:var(--accent-green);font-size:0.8rem;"><svg viewBox="0 0 24 24" width="1em"
+                                height="1em" fill="currentColor">
+                                <path
+                                    d="M12.65 10A5.99 5.99 0 007 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 005.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+                            </svg> Issued</span>
                         {% else %}
-                        <span style="color:var(--accent-red);font-size:0.8rem;"><svg viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> None</span>
+                        <span style="color:var(--accent-red);font-size:0.8rem;"><svg viewBox="0 0 24 24" width="1em"
+                                height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                                <path
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg> None</span>
                         {% endif %}
                     </td>
                     <td>
                         {% if u.is_admin %}
-                        <span class="badge-admin">👑 Admin</span>
+                        <span class="badge-admin"><svg viewBox="0 0 24 24" width="12" height="12" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                style="display:inline-block;vertical-align:-2px;margin-right:2px;">
+                                <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"></path>
+                            </svg> Admin</span>
                         {% else %}
                         <span class="badge-attr" style="color:var(--text-secondary);">User</span>
                         {% endif %}
@@ -71,7 +95,15 @@
                         {% if not u.is_admin %}
                         <form method="POST" action="{{ url_for('admin.delete_user', uid=u.id) }}"
                             onsubmit="return confirm('Delete user {{ u.username }}?')">
-                            <button type="submit" class="btn-danger-ht">🗑 Delete</button>
+                            <button type="submit" class="btn-danger-ht"><svg viewBox="0 0 24 24" width="14" height="14"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    style="display:inline-block;vertical-align:-2px;margin-right:2px;">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path
+                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                    </path>
+                                </svg> Delete</button>
                         </form>
                         {% endif %}
                     </td>
@@ -82,7 +114,11 @@
     </div>
     {% else %}
     <div class="text-center" style="padding:60px 0;color:var(--text-muted);">
-        <div style="font-size:3rem;margin-bottom:12px;"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+        <div style="font-size:3rem;margin-bottom:12px;"><svg viewBox="0 0 24 24" width="1em" height="1em"
+                fill="currentColor">
+                <path
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg></div>
         <p>No users registered yet. <a href="{{ url_for('admin.dashboard') }}" style="color:var(--accent-blue);">Add a
                 user →</a></p>
     </div>

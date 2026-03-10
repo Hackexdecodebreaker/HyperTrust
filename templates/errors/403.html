@@ -3,13 +3,18 @@
 {% block content %}
 <div class="login-page">
     <div class="glass-card login-card text-center" style="padding:48px 36px;">
-        <div style="font-size:4rem;margin-bottom:16px;">🚫</div>
+        <div style="font-size:4rem;margin-bottom:16px;"><svg viewBox="0 0 24 24" width="64" height="64" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+            </svg></div>
         <h2 style="font-size:1.8rem;font-weight:800;color:var(--accent-red);margin-bottom:8px;">403</h2>
         <h3 style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:12px;">Access Forbidden</h3>
         <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:28px;">
             You do not have permission to view this page. This attempt has been logged.
         </p>
-        <a href="{{ url_for('auth.index') }}" class="btn-outline-ht" style="justify-content:center;">&larr; Return Home</a>
+        <a href="{{ url_for('auth.index') }}" class="btn-outline-ht" style="justify-content:center;">&larr; Return
+            Home</a>
     </div>
 </div>
 {% endblock %}
