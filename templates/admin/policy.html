@@ -54,10 +54,9 @@
                         viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2">
                         <path d="M5 13l4 4L19 7" />
                     </svg> Path 1 —
-                    Student Access</p>
+                    Paid User Access</p>
                 <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.6;">
-                    User must have <span class="badge-attr">dept:cse</span> <strong>AND</strong> <span
-                        class="badge-attr">paid:true</span>
+                    User must have <span class="badge-attr">paid:true</span> — <strong>any department</strong>
                 </p>
             </div>
             <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);font-weight:700;">— OR —</div>
@@ -196,14 +195,14 @@
         <div class="policy-preview">
             <h4>Generated Policy</h4>
             <div class="policy-output">
-                <code id="policy-output">(dept:computerscience and paid:true) or role:faculty</code>
+                <code id="policy-output">paid:true</code>
             </div>
             <button type="button" class="btn-preview" onclick="updatePolicyPreview()">Update Preview</button>
         </div>
 
         <!-- Apply Policy -->
         <form method="POST" action="{{ url_for('admin.update_policy') }}" id="policy-form">
-            <input type="hidden" name="policy" id="policy-input" value="(dept:computerscience and paid:true) or role:faculty">
+            <input type="hidden" name="policy" id="policy-input" value="paid:true">
             <button type="submit" class="btn-primary-ht w-100">
                 <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -248,10 +247,9 @@
                         viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2">
                         <path d="M5 13l4 4L19 7" />
                     </svg> Path 1 —
-                    Student Access</p>
+                    Paid User Access</p>
                 <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.6;">
-                    User must have <span class="badge-attr">dept:cse</span> <strong>AND</strong> <span
-                        class="badge-attr">paid:true</span>
+                    User must have <span class="badge-attr">paid:true</span> — <strong>any department</strong>
                 </p>
             </div>
             <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);font-weight:700;">— OR —</div>
@@ -288,10 +286,18 @@
 <script>
 // Policy Builder JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize attribute value dropdowns
+    // Initialize attribute value dropdowns AND value change listeners
     document.querySelectorAll('.condition-attr').forEach(function(select) {
         select.addEventListener('change', function() {
             updateValueDropdowns(this);
+            updatePolicyPreview();
+        });
+    });
+
+    // Add change listeners to all value dropdowns
+    document.querySelectorAll('.condition-value').forEach(function(select) {
+        select.addEventListener('change', function() {
+            updatePolicyPreview();
         });
     });
 
@@ -301,6 +307,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (attrSelect.value) {
             updateValueDropdowns(attrSelect);
         }
+    });
+
+    // Safety net: always update the hidden input right before form submission
+    document.getElementById('policy-form').addEventListener('submit', function() {
+        updatePolicyPreview();
     });
 
     updatePolicyPreview();
@@ -363,10 +374,16 @@ function addCondition(pathNum) {
         <button type="button" class="btn-remove" onclick="removeCondition(this)">×</button>
     `;
 
-    // Add event listener to the new attribute select
+    // Add event listeners to the new dropdowns (attr + all value selects)
     const attrSelect = newItem.querySelector('.condition-attr');
     attrSelect.addEventListener('change', function() {
         updateValueDropdowns(this);
+        updatePolicyPreview();
+    });
+    newItem.querySelectorAll('.condition-value').forEach(function(sel) {
+        sel.addEventListener('change', function() {
+            updatePolicyPreview();
+        });
     });
 
     conditionsList.appendChild(newItem);
@@ -400,7 +417,7 @@ function updatePolicyPreview() {
     }
     
     if (!policy) {
-        policy = '(dept:computerscience and paid:true) or role:faculty';
+        policy = 'paid:true';
     }
     
     document.getElementById('policy-output').textContent = policy;

@@ -90,6 +90,18 @@ def run():
         print(f"          Username : {Config.ADMIN_USERNAME}")
         print(f"          Password : {Config.ADMIN_PASSWORD}")
 
+    # --- Seed default WiFi policy ---
+    existing_wifi = conn.execute(
+        "SELECT value FROM system_settings WHERE key='wifi_policy'"
+    ).fetchone()
+    if not existing_wifi:
+        conn.execute(
+            "INSERT INTO system_settings (key, value) VALUES ('wifi_policy', 'paid:true')"
+        )
+        print("[init_db] ✅ Default WiFi policy set to 'paid:true'.")
+    else:
+        print(f"[init_db] WiFi policy already set: {existing_wifi['value']}")
+
     conn.commit()
     conn.close()
     print("[init_db] ✅ Database initialized successfully.")

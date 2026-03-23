@@ -13,7 +13,8 @@ from db import (get_db, get_all_users, get_user_by_id,
                 get_system_pk, get_system_msk,
                 get_user_attributes_base,
                 get_all_resource_policies, get_resource_policy,
-                save_resource_policy, update_resource_policy)
+                save_resource_policy, update_resource_policy,
+                get_wifi_policy, set_wifi_policy)
 from abe_engine import cpabe_keygen
 from crypto_utils import benchmark_encryption
 
@@ -45,9 +46,7 @@ def dashboard():
     recent     = logs[:10]
 
     pk = get_system_pk(db)
-    active_policy = db.execute(
-        "SELECT policy FROM access_tokens ORDER BY created_at DESC LIMIT 1"
-    ).fetchone()
+    active_policy = get_wifi_policy(db)
 
     return render_template(
         "admin/dashboard.html",
@@ -56,15 +55,13 @@ def dashboard():
         total_users=len(users),
         total_ok=total_ok,
         total_deny=total_deny,
-        active_policy=active_policy["policy"] if active_policy else "—"
+        active_policy=active_policy
     )
 
 
 # ─── User Management ─────────────────────────────────────────────────────────
 
-DEFAULT_POLICY = (
-    "((dept:cse and paid:true) or (role:networkadmin or role:itsupport))"
-)
+DEFAULT_POLICY = "paid:true"
 
 @admin_bp.route("/users")
 @admin_required
@@ -162,12 +159,10 @@ def logs():
 @admin_required
 def policy():
     db = get_db()
-    token_row = db.execute(
-        "SELECT * FROM access_tokens ORDER BY created_at DESC LIMIT 1"
-    ).fetchone()
+    active_policy = get_wifi_policy(db)
     return render_template(
         "admin/policy.html",
-        active_policy=token_row["policy"] if token_row else DEFAULT_POLICY,
+        active_policy=active_policy,
         default_policy=DEFAULT_POLICY
     )
 
@@ -188,8 +183,10 @@ def update_policy():
     
     db = get_db()
     
-    # Update the policy by creating a new token with the updated policy
-    # This simulates updating the active policy
+    # Persist the new WiFi policy in system_settings (takes effect immediately)
+    set_wifi_policy(db, new_policy)
+    
+    # Also create an access token with the new policy so the ABE encryption side stays in sync
     pk = get_system_pk(db)
     
     if pk:
@@ -207,13 +204,9 @@ def update_policy():
                 encrypted_aes_key=bundle["encrypted_aes_key"],
                 policy=bundle["policy"]
             )
-            db.commit()
-            flash(f"Policy updated successfully! New policy: {new_policy}", "success")
-        else:
-            flash("Failed to encrypt token with new policy.", "danger")
-    else:
-        flash("System keys not available. Please contact system administrator.", "danger")
     
+    db.commit()
+    flash(f"WiFi policy updated successfully! New policy: {new_policy}", "success")
     return redirect(url_for("admin.policy"))
 
 

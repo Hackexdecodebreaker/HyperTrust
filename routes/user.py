@@ -12,16 +12,12 @@ from db import (get_db, get_user_by_id, get_user_private_key, save_user_private_
                 save_access_token, log_access,
                 get_system_pk, get_system_msk, save_payment, update_payment_status,
                 get_user_payments, update_user_paid_status, get_user_attributes_base,
-                get_all_resource_policies, get_resource_policy)
+                get_all_resource_policies, get_resource_policy, get_latest_token,
+                get_wifi_policy)
 from abe_engine import cpabe_keygen
 from crypto_utils import generate_wifi_token, encrypt_token, decrypt_token
 
 user_bp = Blueprint("user", __name__, url_prefix="/user")
-
-# Default policy for WiFi access
-WIFI_POLICY = (
-    "(paid:true or (role:networkadmin or role:itsupport))"
-)
 
 
 def login_required(f):
@@ -41,13 +37,16 @@ def dashboard():
     user        = get_user_by_id(db, session["user_id"])
     attributes  = get_user_attributes(db, session["user_id"])
     recent_logs = get_user_logs(db, session["user_id"])[:5]
+    
+    # Get current WiFi policy from system_settings
+    current_policy = get_wifi_policy(db)
 
     return render_template(
         "user/dashboard.html",
         user=user,
         attributes=attributes,
         recent_logs=recent_logs,
-        policy=WIFI_POLICY
+        policy=current_policy
     )
 
 
@@ -63,9 +62,12 @@ def request_access():
         flash("Your cryptographic key has not been set up yet. Contact admin.", "danger")
         return redirect(url_for("user.dashboard"))
 
+    # Use current active WiFi policy from system_settings
+    policy = get_wifi_policy(db)
+
     # Generate and hybrid-encrypt a new WiFi token
     token_str = generate_wifi_token()
-    bundle    = encrypt_token(token_str, WIFI_POLICY, pk)
+    bundle    = encrypt_token(token_str, policy, pk)
 
     if not bundle:
         flash("System error during token encryption.", "danger")

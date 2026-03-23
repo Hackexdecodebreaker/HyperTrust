@@ -276,3 +276,26 @@ def delete_resource_policy(db, resource_id: str):
         (resource_id,)
     )
 
+
+# --------------- WiFi policy helpers ----------------------------------------
+
+DEFAULT_WIFI_POLICY = "paid:true"
+
+def get_wifi_policy(db) -> str:
+    """Return the current active WiFi policy from system_settings.
+    Defaults to 'paid:true' (any paid user, regardless of department)."""
+    row = db.execute(
+        "SELECT value FROM system_settings WHERE key = 'wifi_policy'"
+    ).fetchone()
+    if row:
+        return row["value"]
+    return DEFAULT_WIFI_POLICY
+
+
+def set_wifi_policy(db, policy: str):
+    """Store / update the active WiFi policy in system_settings."""
+    db.execute(
+        "INSERT OR REPLACE INTO system_settings (key, value) VALUES ('wifi_policy', ?)",
+        (policy,)
+    )
+
