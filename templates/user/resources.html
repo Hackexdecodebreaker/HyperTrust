@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% block title %}Resources{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>📚 Available Resources</h1>
+        <p>Access department portals and academic resources</p>
+    </div>
+
+    <!-- User Attributes Summary -->
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3>Your Access Attributes</h3>
+        </div>
+        <div class="card-body">
+            <div class="attributes-grid">
+                {% for attr in attributes %}
+                <span class="badge-attr">{{ attr }}</span>
+                {% endfor %}
+            </div>
+            <div class="payment-status" style="margin-top: 16px;">
+                <span class="status-badge {{ 'status-completed' if user.paid_dues else 'status-pending' }}">
+                    Payment: {{ 'Paid' if user.paid_dues else 'Unpaid' }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resources Grid -->
+    <div class="resources-grid">
+        {% for resource in resources %}
+        <div class="resource-card {{ 'resource-accessible' if resource.has_access else 'resource-restricted' }}">
+            <div class="resource-header">
+                <div class="resource-icon">{{ resource.icon }}</div>
+                <div class="resource-category">{{ resource.category }}</div>
+            </div>
+            
+            <div class="resource-content">
+                <h3 class="resource-title">{{ resource.name }}</h3>
+                <p class="resource-description">{{ resource.description }}</p>
+                
+                <div class="resource-policy">
+                    <small><strong>Policy:</strong> {{ resource.policy }}</small>
+                </div>
+            </div>
+            
+            <div class="resource-actions">
+                {% if resource.has_access %}
+                <a href="{{ url_for('user.secure_portal', portal_name=resource.id) }}" class="btn-access">
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                    Access Portal
+                </a>
+                {% else %}
+                <button class="btn-restricted" disabled>
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm3 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                    </svg>
+                    Access Denied
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Help Section -->
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3>💡 How Access Control Works</h3>
+        </div>
+        <div class="card-body">
+            <div class="help-grid">
+                <div class="help-item">
+                    <div class="help-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <path d="M21 10h-8.35C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H13l2 2 2-2 2 2 2-2h3v-2z"/>
+                        </svg></div>
+                    <div class="help-content">
+                        <h4>ABE Cryptography</h4>
+                        <p>Your private key contains encrypted attributes. Access is granted only when your attributes satisfy the resource's policy.</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg></div>
+                    <div class="help-content">
+                        <h4>Payment Status</h4>
+                        <p>Many resources require payment verification. Make sure your account is marked as paid.</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A2.01 2.01 0 0 0 18.06 7H15.1c-.33 0-.62-.16-.81-.41L12.26 4H10v16H8V8H6v12H4V8H2v12H0v2h18v-2h-2z"/>
+                        </svg></div>
+                    <div class="help-content">
+                        <h4>Department Access</h4>
+                        <p>Department portals are typically restricted to students and faculty in that department.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.resource-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.resource-accessible {
+    border-color: rgba(34, 211, 165, 0.3);
+}
+
+.resource-restricted {
+    border-color: rgba(247, 89, 106, 0.3);
+    opacity: 0.8;
+}
+
+.resource-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.resource-icon {
+    font-size: 2rem;
+}
+
+.resource-category {
+    background: var(--accent-blue);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resource-content {
+    padding: 20px;
+}
+
+.resource-title {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.resource-description {
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.resource-policy {
+    background: rgba(0,0,0,0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    color: var(--text-muted);
+}
+
+.resource-actions {
+    padding: 20px;
+    border-top: 1px solid var(--border-glass);
+}
+
+.btn-access {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-green);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-access:hover {
+    background: var(--accent-green-hover);
+    transform: translateY(-1px);
+}
+
+.btn-restricted {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--text-muted);
+    color: var(--bg-primary);
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: not-allowed;
+    width: 100%;
+    justify-content: center;
+}
+
+.attributes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.help-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.help-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.help-content h4 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.help-content p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-completed {
+    background: rgba(34, 211, 165, 0.2);
+    color: var(--accent-green);
+}
+
+.status-pending {
+    background: rgba(247, 89, 106, 0.2);
+    color: var(--accent-red);
+}
+</style>
+{% endblock %}

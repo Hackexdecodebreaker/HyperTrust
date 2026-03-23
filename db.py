@@ -5,6 +5,7 @@ db.py — SQLite database connection and helpers
 import sqlite3
 import json
 import os
+from datetime import datetime
 from flask import g, current_app
 
 
@@ -39,6 +40,36 @@ def init_db(app):
         with open(schema_path) as f:
             db.executescript(f.read())
         db.commit()
+
+
+def get_user_attributes_base(user_row) -> list[str]:
+    """Build current attributes list from user database row (dynamic for paid status)"""
+    if not user_row:
+        return []
+    
+    # Fixed department mapping to match init_resource_policies.py policies
+    department = user_row["department"].strip()
+    dept_map = {
+        "computer science": "computerscience",
+        "information technology": "informationtechnology",
+        "electrical engineering": "electricalengineering",
+        "mechanical engineering": "mechanicalengineering",
+        "civil engineering": "civilengineering",
+        "business administration": "businessadministration"
+    }
+    
+    dept_key = dept_map.get(department.lower(), department.lower().replace(" ", ""))
+    role_key = user_row["role"].lower().replace(" ", "") if user_row["role"] else ""
+    paid_key = "true" if user_row["paid_dues"] else "false"
+    
+    attributes = []
+    if dept_key:
+        attributes.append(f"dept:{dept_key}")
+    if role_key:
+        attributes.append(f"role:{role_key}")
+    attributes.append(f"paid:{paid_key}")
+    
+    return attributes
 
 
 # --------------- User helpers -----------------------------------------------
@@ -157,3 +188,91 @@ def get_user_logs(db, user_id: int):
            LIMIT 100""",
         (user_id,)
     ).fetchall()
+
+
+# --------------- Payment helpers --------------------------------------------
+
+def save_payment(db, user_id: int, amount: float, currency: str = "USD",
+                 payment_method: str = "simulated", description: str = "") -> int:
+    cur = db.execute(
+        """INSERT INTO payments (user_id, amount, currency, status, payment_method, description)
+           VALUES (?,?,?,?,?,?)""",
+        (user_id, amount, currency, "pending", payment_method, description)
+    )
+    return cur.lastrowid
+
+
+def update_payment_status(db, payment_id: int, status: str, transaction_id: str = None):
+    if transaction_id:
+        db.execute(
+            "UPDATE payments SET status = ?, transaction_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+            (status, transaction_id, payment_id)
+        )
+    else:
+        db.execute(
+            "UPDATE payments SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+            (status, payment_id)
+        )
+
+
+def get_user_payments(db, user_id: int):
+    return db.execute(
+        "SELECT * FROM payments WHERE user_id = ? ORDER BY created_at DESC",
+        (user_id,)
+    ).fetchall()
+
+
+def get_all_payments(db):
+    return db.execute(
+        """SELECT p.*, u.username, u.name
+           FROM payments p
+           JOIN users u ON p.user_id = u.id
+           ORDER BY p.created_at DESC"""
+    ).fetchall()
+
+
+def update_user_paid_status(db, user_id: int, paid: bool):
+    db.execute(
+        "UPDATE users SET paid_dues = ? WHERE id = ?",
+        (1 if paid else 0, user_id)
+    )
+
+
+# --------------- Resource policy helpers ------------------------------------
+
+def get_all_resource_policies(db):
+    return db.execute(
+        "SELECT * FROM resource_policies WHERE is_active = 1 ORDER BY category, name"
+    ).fetchall()
+
+
+def get_resource_policy(db, resource_id: str):
+    return db.execute(
+        "SELECT * FROM resource_policies WHERE resource_id = ? AND is_active = 1",
+        (resource_id,)
+    ).fetchone()
+
+
+def save_resource_policy(db, resource_id: str, name: str, description: str,
+                        category: str, icon: str, policy: str):
+    db.execute(
+        """INSERT OR REPLACE INTO resource_policies
+           (resource_id, name, description, category, icon, policy, updated_at)
+           VALUES (?,?,?,?,?,?,CURRENT_TIMESTAMP)""",
+        (resource_id, name, description, category, icon, policy)
+    )
+
+
+def update_resource_policy(db, resource_id: str, policy: str):
+    db.execute(
+        "UPDATE resource_policies SET policy = ?, updated_at = CURRENT_TIMESTAMP WHERE resource_id = ?",
+        (policy, resource_id)
+    )
+
+
+def delete_resource_policy(db, resource_id: str):
+    db.execute(
+        "UPDATE resource_policies SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE resource_id = ?",
+        (resource_id,)
+    )
+

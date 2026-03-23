@@ -16,7 +16,13 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.config["DATABASE"] = Config.DB_PATH
-
+    
+    # Session configuration - 30 minutes of inactivity
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SESSION_PERMANENT'] = True
+    app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes in seconds
+    app.config['SESSION_REFRESH_EACH_REQUEST'] = True
+    
     # Register DB teardown
     app.teardown_appcontext(close_db)
 

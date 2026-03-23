@@ -15,6 +15,7 @@
 </div>
 
 <div class="grid-2">
+<div class="grid-2">
     <!-- Active Policy -->
     <div class="glass-card p-6">
         <div class="section-title"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
@@ -90,36 +91,497 @@
     </div>
 </div>
 
-<!-- ABE Algorithms Reference -->
+<!-- Edit Policy -->
 <div class="glass-card p-6 mt-4">
-    <div class="section-title"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
-            <path
-                d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" />
-        </svg> CP-ABE Algorithm Overview</div>
-    <div class="grid-2" style="gap:16px;">
-        {% set algos = [
-        ('Setup()', 'Generates system-wide Public Key (PK) and Master Secret Key (MSK). MSK is stored server-side
-        only and is never exposed.', 'blue'),
-        ('KeyGen(PK, MSK, Attrs)', 'Generates a user private key bound to their attributes. Each key has a unique
-        salt to prevent collusion.', 'purple'),
-        ('Encrypt(PK, Data, Policy)', 'Encrypts data under a boolean access policy. Only users satisfying the policy
-        can decrypt.', 'cyan'),
-        ('<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
-            <path
-                d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
-        </svg> Decrypt(PK, SK, CT)', 'Attempts decryption — succeeds only if the user\'s attributes satisfy the
-        ciphertext
-        policy.', 'green')
-        ] %}
-        {% for name, desc, color in algos %}
-        <div
-            style="background:rgba(255,255,255,0.02);border:1px solid var(--border-glass);border-radius:10px;padding:16px;">
-            <p
-                style="font-size:0.85rem;font-weight:700;color:var(--accent-{{ color }});font-family:'Courier New',monospace;margin-bottom:8px;">
-                {{ name }}</p>
-            <p style="font-size:0.78rem;color:var(--text-secondary);line-height:1.6;">{{ desc }}</p>
+    <div class="section-title"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg> Policy Builder</div>
+
+    <div class="policy-builder">
+        <div class="builder-section">
+            <h4>Build Access Policy</h4>
+            <p class="builder-description">Create policies using attribute combinations. Users must satisfy ALL conditions in a path or ANY path.</p>
+
+            <!-- Path 1 -->
+            <div class="policy-path">
+                <div class="path-header">
+                    <span class="path-label">Path 1 (AND conditions)</span>
+                    <button type="button" class="btn-add-condition" onclick="addCondition(1)">+ Add Condition</button>
+                </div>
+                <div id="path1-conditions" class="conditions-list">
+                    <div class="condition-item">
+                        <select class="condition-attr">
+                            <option value="">Select Attribute</option>
+                            <option value="dept">Department</option>
+                            <option value="role">Role</option>
+                            <option value="paid">Payment Status</option>
+                        </select>
+                        <select class="condition-op">
+                            <option value=":">:</option>
+                        </select>
+                        <select class="condition-value" data-attr="dept">
+                            <option value="">Select Department</option>
+                            <option value="computerscience">Computer Science</option>
+                            <option value="informationtechnology">Information Technology</option>
+                            <option value="electricalengineering">Electrical Engineering</option>
+                            <option value="mechanicalengineering">Mechanical Engineering</option>
+                            <option value="civilengineering">Civil Engineering</option>
+                            <option value="businessadministration">Business Administration</option>
+                        </select>
+                        <select class="condition-value" data-attr="role" style="display:none;">
+                            <option value="">Select Role</option>
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="networkadmin">Network Admin</option>
+                            <option value="itsupport">IT Support</option>
+                        </select>
+                        <select class="condition-value" data-attr="paid" style="display:none;">
+                            <option value="">Select Status</option>
+                            <option value="true">Paid</option>
+                            <option value="false">Unpaid</option>
+                        </select>
+                        <button type="button" class="btn-remove" onclick="removeCondition(this)">×</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OR separator -->
+            <div class="path-separator">
+                <span>OR</span>
+            </div>
+
+            <!-- Path 2 -->
+            <div class="policy-path">
+                <div class="path-header">
+                    <span class="path-label">Path 2 (AND conditions)</span>
+                    <button type="button" class="btn-add-condition" onclick="addCondition(2)">+ Add Condition</button>
+                </div>
+                <div id="path2-conditions" class="conditions-list">
+                    <div class="condition-item">
+                        <select class="condition-attr">
+                            <option value="">Select Attribute</option>
+                            <option value="dept">Department</option>
+                            <option value="role">Role</option>
+                            <option value="paid">Payment Status</option>
+                        </select>
+                        <select class="condition-op">
+                            <option value=":">:</option>
+                        </select>
+                        <select class="condition-value" data-attr="dept">
+                            <option value="">Select Department</option>
+                            <option value="computerscience">Computer Science</option>
+                            <option value="informationtechnology">Information Technology</option>
+                            <option value="electricalengineering">Electrical Engineering</option>
+                            <option value="mechanicalengineering">Mechanical Engineering</option>
+                            <option value="civilengineering">Civil Engineering</option>
+                            <option value="businessadministration">Business Administration</option>
+                        </select>
+                        <select class="condition-value" data-attr="role" style="display:none;">
+                            <option value="">Select Role</option>
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="networkadmin">Network Admin</option>
+                            <option value="itsupport">IT Support</option>
+                        </select>
+                        <select class="condition-value" data-attr="paid" style="display:none;">
+                            <option value="btn-remove" class="btn-remove" onclick="removeCondition(this)">×</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% endfor %}
+
+        <!-- Policy Preview -->
+        <div class="policy-preview">
+            <h4>Generated Policy</h4>
+            <div class="policy-output">
+                <code id="policy-output">(dept:computerscience and paid:true) or role:faculty</code>
+            </div>
+            <button type="button" class="btn-preview" onclick="updatePolicyPreview()">Update Preview</button>
+        </div>
+
+        <!-- Apply Policy -->
+        <form method="POST" action="{{ url_for('admin.update_policy') }}" id="policy-form">
+            <input type="hidden" name="policy" id="policy-input" value="(dept:computerscience and paid:true) or role:faculty">
+            <button type="submit" class="btn-primary-ht w-100">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                </svg> Apply Policy
+            </button>
+        </form>
+    </div>
+
+    <div style="margin-top:20px;padding:16px;background:rgba(79,142,247,0.07);border:1px solid rgba(79,142,247,0.2);border-radius:10px;">
+        <p style="font-size:0.78rem;font-weight:600;color:var(--accent-blue);margin-bottom:8px;">
+            <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg> Policy Builder Help
+        </p>
+        <ul style="font-size:0.78rem;color:var(--text-secondary);line-height:1.6;margin:0;padding-left:20px;">
+            <li><strong>Path 1 & Path 2:</strong> Users need to satisfy ALL conditions in Path 1 OR ALL conditions in Path 2</li>
+            <li><strong>Attributes:</strong> dept (department), role (user role), paid (payment status)</li>
+            <li><strong>Logic:</strong> AND within paths, OR between paths</li>
+            <li><strong>Example:</strong> (Computer Science students who paid) OR (any Faculty member)</li>
+        </ul>
     </div>
 </div>
+
+    <!-- Policy Explanation -->
+    <div class="glass-card p-6">
+        <div class="section-title"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20"></path>
+                <path d="m17 5-5-3-5 3"></path>
+                <path d="m17 19-5 3-5-3"></path>
+                <path d="M2 12h20"></path>
+                <path d="m5 7 3-5 3 5"></path>
+                <path d="m5 17 3 5 3-5"></path>
+            </svg> Policy Breakdown</div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+            <div
+                style="background:rgba(34,211,165,0.07);border:1px solid rgba(34,211,165,0.2);border-radius:10px;padding:16px;">
+                <p style="font-size:0.78rem;font-weight:700;color:var(--accent-green);margin-bottom:8px;"><svg
+                        viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg> Path 1 —
+                    Student Access</p>
+                <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.6;">
+                    User must have <span class="badge-attr">dept:cse</span> <strong>AND</strong> <span
+                        class="badge-attr">paid:true</span>
+                </p>
+            </div>
+            <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);font-weight:700;">— OR —</div>
+            <div
+                style="background:rgba(79,142,247,0.07);border:1px solid rgba(79,142,247,0.2);border-radius:10px;padding:16px;">
+                <p style="font-size:0.78rem;font-weight:700;color:var(--accent-blue);margin-bottom:8px;"><svg
+                        viewBox="0 0 24 24" width="1em" height="1em" stroke="currentColor" fill="none" stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg> Path 2 —
+                    Admin Override</p>
+                <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.6;">
+                    User must have <span class="badge-attr">role:networkadmin</span> <strong>OR</strong> <span
+                        class="badge-attr">role:itsupport</span>
+                </p>
+            </div>
+
+            <div style="margin-top:10px;border-top:1px solid var(--border-glass);padding-top:14px;">
+                <p style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;"><svg
+                        viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                        <path
+                            d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2H9V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z" />
+                    </svg> Collusion
+                    Resistance</p>
+                <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;">
+                    Each user's private key is derived with a unique salt. Even if User A (dept:cse, paid:false)
+                    and User B (dept:ece, paid:true) combine keys, neither can satisfy the policy. ABE's design
+                    mathematically prevents attribute pooling.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Policy Builder JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize attribute value dropdowns
+    document.querySelectorAll('.condition-attr').forEach(function(select) {
+        select.addEventListener('change', function() {
+            updateValueDropdowns(this);
+        });
+    });
+
+    // Initialize existing conditions
+    document.querySelectorAll('.condition-item').forEach(function(item) {
+        const attrSelect = item.querySelector('.condition-attr');
+        if (attrSelect.value) {
+            updateValueDropdowns(attrSelect);
+        }
+    });
+
+    updatePolicyPreview();
+});
+
+function updateValueDropdowns(attrSelect) {
+    const item = attrSelect.closest('.condition-item');
+    const valueSelects = item.querySelectorAll('.condition-value');
+    const selectedAttr = attrSelect.value;
+
+    // Hide all value selects
+    valueSelects.forEach(function(select) {
+        select.style.display = 'none';
+    });
+
+    // Show the relevant value select
+    if (selectedAttr) {
+        const relevantSelect = item.querySelector(`.condition-value[data-attr="${selectedAttr}"]`);
+        if (relevantSelect) {
+            relevantSelect.style.display = 'inline-block';
+        }
+    }
+}
+
+function addCondition(pathNum) {
+    const conditionsList = document.getElementById(`path${pathNum}-conditions`);
+    const newItem = document.createElement('div');
+    newItem.className = 'condition-item';
+    newItem.innerHTML = `
+        <select class="condition-attr">
+            <option value="">Select Attribute</option>
+            <option value="dept">Department</option>
+            <option value="role">Role</option>
+            <option value="paid">Payment Status</option>
+        </select>
+        <select class="condition-op">
+            <option value=":">:</option>
+        </select>
+        <select class="condition-value" data-attr="dept">
+            <option value="">Select Department</option>
+            <option value="computerscience">Computer Science</option>
+            <option value="informationtechnology">Information Technology</option>
+            <option value="electricalengineering">Electrical Engineering</option>
+            <option value="mechanicalengineering">Mechanical Engineering</option>
+            <option value="civilengineering">Civil Engineering</option>
+            <option value="businessadministration">Business Administration</option>
+        </select>
+        <select class="condition-value" data-attr="role" style="display:none;">
+            <option value="">Select Role</option>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+            <option value="networkadmin">Network Admin</option>
+            <option value="itsupport">IT Support</option>
+        </select>
+        <select class="condition-value" data-attr="paid" style="display:none;">
+            <option value="">Select Status</option>
+            <option value="true">Paid</option>
+            <option value="false">Unpaid</option>
+        </select>
+        <button type="button" class="btn-remove" onclick="removeCondition(this)">×</button>
+    `;
+
+    // Add event listener to the new attribute select
+    const attrSelect = newItem.querySelector('.condition-attr');
+    attrSelect.addEventListener('change', function() {
+        updateValueDropdowns(this);
+    });
+
+    conditionsList.appendChild(newItem);
+    updatePolicyPreview();
+}
+
+function removeCondition(button) {
+    const item = button.closest('.condition-item');
+    const conditionsList = item.parentElement;
+    
+    // Don't remove if it's the last condition in the path
+    if (conditionsList.children.length > 1) {
+        item.remove();
+        updatePolicyPreview();
+    }
+}
+
+function updatePolicyPreview() {
+    const path1Conditions = getPathConditions(1);
+    const path2Conditions = getPathConditions(2);
+    
+    let policy = '';
+    
+    if (path1Conditions.length > 0) {
+        policy += '(' + path1Conditions.join(' and ') + ')';
+    }
+    
+    if (path2Conditions.length > 0) {
+        if (policy) policy += ' or ';
+        policy += '(' + path2Conditions.join(' and ') + ')';
+    }
+    
+    if (!policy) {
+        policy = '(dept:computerscience and paid:true) or role:faculty';
+    }
+    
+    document.getElementById('policy-output').textContent = policy;
+    document.getElementById('policy-input').value = policy;
+}
+
+function getPathConditions(pathNum) {
+    const conditions = [];
+    const pathConditions = document.querySelectorAll(`#path${pathNum}-conditions .condition-item`);
+    
+    pathConditions.forEach(function(item) {
+        const attrSelect = item.querySelector('.condition-attr');
+        const valueSelect = item.querySelector('.condition-value:not([style*="display: none"])');
+        
+        if (attrSelect.value && valueSelect && valueSelect.value) {
+            conditions.push(`${attrSelect.value}:${valueSelect.value}`);
+        }
+    });
+    
+    return conditions;
+}
+</script>
+
+<style>
+.policy-builder {
+    margin-top: 20px;
+}
+
+.builder-section {
+    margin-bottom: 30px;
+}
+
+.builder-description {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.policy-path {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.path-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.path-label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.btn-add-condition {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-add-condition:hover {
+    background: var(--accent-blue-hover);
+}
+
+.conditions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.condition-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.condition-item select {
+    padding: 8px 12px;
+    border: 1px solid var(--border-glass);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.condition-item select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.btn-remove {
+    background: var(--accent-red);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.btn-remove:hover {
+    background: #e74c3c;
+}
+
+.path-separator {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.path-separator::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-glass);
+}
+
+.path-separator span {
+    background: var(--bg-primary);
+    padding: 0 20px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.policy-preview {
+    background: rgba(34, 211, 165, 0.1);
+    border: 1px solid rgba(34, 211, 165, 0.3);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.policy-preview h4 {
+    margin: 0 0 10px 0;
+    color: var(--accent-green);
+    font-size: 1rem;
+}
+
+.policy-output {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-glass);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.btn-preview {
+    background: var(--accent-green);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+}
+
+.btn-preview:hover {
+    background: var(--accent-green-hover);
+}
+</style>
 {% endblock %}

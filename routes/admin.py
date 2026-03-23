@@ -10,7 +10,10 @@ from functools import wraps
 
 from db import (get_db, get_all_users, get_user_by_id,
                 get_user_attributes, get_all_logs,
-                save_user_private_key, get_system_pk, get_system_msk)
+                get_system_pk, get_system_msk,
+                get_user_attributes_base,
+                get_all_resource_policies, get_resource_policy,
+                save_resource_policy, update_resource_policy)
 from abe_engine import cpabe_keygen
 from crypto_utils import benchmark_encryption
 
@@ -104,25 +107,22 @@ def add_user():
     )
     user_id = cur.lastrowid
 
-    # Build attributes list
-    dept_key = department.lower().replace(" ", "")
-    role_key = role.lower().replace(" ", "")
-    paid_key = "true" if paid_dues else "false"
-    attributes = [
-        f"dept:{dept_key}",
-        f"role:{role_key}",
-        f"paid:{paid_key}"
-    ]
+    # ✅ UPDATED: Use helper for consistent attribute generation
+    user_row = get_user_by_id(db, user_id)
+    attributes = get_user_attributes_base(user_row)
 
     pk  = get_system_pk(db)
     msk = get_system_msk(db)
 
     if pk and msk:
         sk = cpabe_keygen(pk, msk, attributes, user_id=user_id)
+        from db import save_user_private_key
         save_user_private_key(db, user_id, sk)
+        flash(f"User '{name}' added with attributes: {', '.join(attributes)}", "success")
+    else:
+        flash(f"User '{name}' added (no system keys - no ABE key generated)", "warning")
 
     db.commit()
-    flash(f"User '{name}' added with attributes: {', '.join(attributes)}", "success")
     return redirect(url_for("admin.dashboard"))
 
 
@@ -136,9 +136,13 @@ def delete_user(uid: int):
     elif user["is_admin"]:
         flash("Cannot delete the admin account.", "warning")
     else:
-        db.execute("DELETE FROM users WHERE id=?", (uid,))
+        # Delete related records first to avoid FK constraint
+        db.execute("DELETE FROM user_keys WHERE user_id = ?", (uid,))
+        db.execute("DELETE FROM payments WHERE user_id = ?", (uid,))
+        db.execute("DELETE FROM access_logs WHERE user_id = ?", (uid,))
+        db.execute("DELETE FROM users WHERE id = ?", (uid,))
         db.commit()
-        flash(f"User '{user['username']}' deleted.", "success")
+        flash(f"User '{user['username']}' and related data deleted.", "success")
     return redirect(url_for("admin.users"))
 
 
@@ -168,6 +172,91 @@ def policy():
     )
 
 
+@admin_bp.route("/policy/update", methods=["POST"])
+@admin_required
+def update_policy():
+    new_policy = request.form.get("policy", "").strip()
+    
+    if not new_policy:
+        flash("Policy cannot be empty.", "danger")
+        return redirect(url_for("admin.policy"))
+    
+    # Basic validation - should contain some attribute references
+    if not any(char in new_policy for char in [":", "and", "or", "(", ")"]):
+        flash("Policy appears invalid. Should contain attributes (e.g., dept:cse) and operators (and/or).", "warning")
+        return redirect(url_for("admin.policy"))
+    
+    db = get_db()
+    
+    # Update the policy by creating a new token with the updated policy
+    # This simulates updating the active policy
+    pk = get_system_pk(db)
+    
+    if pk:
+        from crypto_utils import generate_wifi_token, encrypt_token
+        token_str = generate_wifi_token()
+        bundle = encrypt_token(token_str, new_policy, pk)
+        
+        if bundle:
+            from db import save_access_token
+            save_access_token(
+                db,
+                encrypted_token=bundle["encrypted_token"],
+                nonce=bundle["nonce"],
+                tag=bundle["tag"],
+                encrypted_aes_key=bundle["encrypted_aes_key"],
+                policy=bundle["policy"]
+            )
+            db.commit()
+            flash(f"Policy updated successfully! New policy: {new_policy}", "success")
+        else:
+            flash("Failed to encrypt token with new policy.", "danger")
+    else:
+        flash("System keys not available. Please contact system administrator.", "danger")
+    
+    return redirect(url_for("admin.policy"))
+
+
+# ─── Resource Policy Management ─────────────────────────────────────────────
+
+@admin_bp.route("/resource-policies")
+@admin_required
+def resource_policies():
+    db = get_db()
+    policies = get_all_resource_policies(db)
+    return render_template("admin/resource_policies.html", policies=policies)
+
+
+@admin_bp.route("/resource-policies/<resource_id>/edit", methods=["GET", "POST"])
+@admin_required
+def edit_resource_policy(resource_id):
+    db = get_db()
+    policy = get_resource_policy(db, resource_id)
+    
+    if not policy:
+        flash("Resource policy not found.", "danger")
+        return redirect(url_for("admin.resource_policies"))
+    
+    if request.method == "POST":
+        new_policy = request.form.get("policy", "").strip()
+        
+        if not new_policy:
+            flash("Policy cannot be empty.", "danger")
+            return redirect(request.url)
+        
+        # Basic validation - should contain some attribute references
+        if not any(char in new_policy for char in [":", "and", "or", "(", ")"]):
+            flash("Policy appears invalid. Should contain attributes (e.g., dept:cse) and operators (and/or).", "warning")
+            return redirect(request.url)
+        
+        update_resource_policy(db, resource_id, new_policy)
+        db.commit()
+        flash(f"Policy for '{policy['name']}' updated successfully!", "success")
+        return redirect(url_for("admin.resource_policies"))
+    
+    return render_template("admin/edit_resource_policy.html", policy=policy)
+
+
 # ─── Performance Benchmark ───────────────────────────────────────────────────
 
 @admin_bp.route("/benchmark")
@@ -177,3 +266,4 @@ def benchmark():
     pk = get_system_pk(db)
     results = benchmark_encryption(pk, [3, 5, 10])
     return render_template("admin/benchmark.html", results=results)
+

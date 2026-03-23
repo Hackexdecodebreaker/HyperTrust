@@ -46,3 +46,31 @@ CREATE TABLE IF NOT EXISTS access_logs (
     success      INTEGER NOT NULL DEFAULT 0,
     reason       TEXT    NOT NULL DEFAULT ''
 );
+
+-- Payment records
+CREATE TABLE IF NOT EXISTS payments (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id      INTEGER NOT NULL REFERENCES users(id),
+    amount       REAL    NOT NULL,
+    currency     TEXT    NOT NULL DEFAULT 'USD',
+    status       TEXT    NOT NULL DEFAULT 'pending', -- pending, completed, failed
+    payment_method TEXT NOT NULL DEFAULT 'simulated',
+    transaction_id TEXT UNIQUE,
+    description  TEXT    NOT NULL DEFAULT '',
+    created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Resource policies for ABE access control
+CREATE TABLE IF NOT EXISTS resource_policies (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    resource_id  TEXT    NOT NULL UNIQUE,  -- e.g., 'research_data', 'computer_science'
+    name         TEXT    NOT NULL,         -- Display name
+    description  TEXT    NOT NULL,
+    category     TEXT    NOT NULL DEFAULT 'General',
+    icon         TEXT    NOT NULL DEFAULT '📄',
+    policy       TEXT    NOT NULL,         -- ABE policy string (will be ANDed with paid:true)
+    is_active    INTEGER NOT NULL DEFAULT 1,
+    created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+);

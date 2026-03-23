@@ -33,4 +33,42 @@ document.addEventListener('DOMContentLoaded', () => {
       link.classList.add('active');
     }
   });
+
+  // Login/Register form toggle
+  const showRegisterBtn = document.getElementById('show-register');
+  const showLoginBtn = document.getElementById('show-login');
+  const loginForm = document.querySelector('form[action*="login"]');
+  const registerFormContainer = document.getElementById('register-form');
+
+  if (showRegisterBtn && registerFormContainer) {
+    showRegisterBtn.addEventListener('click', () => {
+      loginForm.style.display = 'none';
+      registerFormContainer.style.display = 'block';
+      showRegisterBtn.style.display = 'none';
+    });
+  }
+
+  if (showLoginBtn && registerFormContainer) {
+    showLoginBtn.addEventListener('click', () => {
+      registerFormContainer.style.display = 'none';
+      loginForm.style.display = 'block';
+      showRegisterBtn.style.display = 'inline-block';
+    });
+  }
+
+  // Sidebar toggle functionality
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  if (sidebarToggle) {
+    // Check if sidebar should be hidden from localStorage
+    const sidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
+    if (sidebarHidden) {
+      document.body.classList.add('sidebar-hidden');
+    }
+
+    sidebarToggle.addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-hidden');
+      const isHidden = document.body.classList.contains('sidebar-hidden');
+      localStorage.setItem('sidebarHidden', isHidden);
+    });
+  }
 });

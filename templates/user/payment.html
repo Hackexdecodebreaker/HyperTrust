@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg> Payment Center</h1>
+        <p>Make payments to access network resources</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Payment Form -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Make a Payment</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('user.process_payment') }}">
+                    <div class="form-group">
+                        <label class="form-label-ht" for="amount">Payment Amount (USD)</label>
+                        <input type="number" id="amount" name="amount" class="form-control-ht"
+                               placeholder="Enter amount" min="1" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label-ht" for="payment_method">Payment Method</label>
+                        <select id="payment_method" name="payment_method" class="form-control-ht" required>
+                            <option value="simulated">Simulated Payment (Demo)</option>
+                            <option value="credit_card">Credit Card</option>
+                            <option value="debit_card">Debit Card</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary-ht w-100">
+                        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                        </svg> Process Payment
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Payment History</h3>
+            </div>
+            <div class="card-body">
+                {% if payments %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Transaction ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.created_at or 'N/A' }}</td>
+                                <td>${{ "%.2f"|format(payment.amount) }}</td>
+                                <td>{{ payment.payment_method.title() }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ payment.status }}">
+                                        {{ payment.status.title() }}
+                                    </span>
+                                </td>
+                                <td>{{ payment.transaction_id or 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" width="3em" height="3em" fill="currentColor" opacity="0.3">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                    <p>No payments found</p>
+                    <small>Make your first payment above</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Account Status -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Account Status</h3>
+            </div>
+            <div class="card-body">
+                <div class="status-info">
+                    <div class="status-item">
+                        <span class="status-label">Payment Status:</span>
+                        <span class="status-value {{ 'status-completed' if user.paid_dues else 'status-pending' }}">
+                            {{ 'Paid' if user.paid_dues else 'Unpaid' }}
+                        </span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Department:</span>
+                        <span class="status-value">{{ user.department }}</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Role:</span>
+                        <span class="status-value">{{ user.role }}</span>
+                    </div>
+                </div>
+
+                {% if not user.paid_dues %}
+                <div class="alert alert-warning" style="margin-top: 20px;">
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <strong>Payment Required:</strong> Make a payment to unlock full network access privileges.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-completed { background: #d4edda; color: #155724; }
+.status-pending { background: #fff3cd; color: #856404; }
+.status-failed { background: #f8d7da; color: #721c24; }
+
+.status-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.status-item:last-child {
+    border-bottom: none;
+}
+
+.status-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.status-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.empty-state svg {
+    margin-bottom: 16px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.data-table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-glass);
+}
+
+.data-table tbody tr:hover {
+    background: var(--bg-glass-hover);
+}
+</style>
+{% endblock %}

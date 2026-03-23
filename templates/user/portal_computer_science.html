@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{% block title %}{{ portal_title }}{% endblock %}
+
+{% block content %}
+<div class="portal-container">
+    <div class="portal-header">
+        <div class="portal-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg></div>
+        <div class="portal-info">
+            <h1>{{ portal_title }}</h1>
+            <p>Computer Science Department Resources and Materials</p>
+        </div>
+        <div class="portal-access">
+            <span class="access-badge access-granted">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                Access Granted
+            </span>
+        </div>
+    </div>
+
+    <div class="portal-content">
+        <!-- Department Resources -->
+        <div class="resource-section">
+            <h2><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg> Course Materials</h2>
+            <div class="resource-grid">
+                <div class="resource-item">
+                    <div class="resource-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg></div>
+                    <h3>Data Structures & Algorithms</h3>
+                    <p>Lecture notes, assignments, and lab materials</p>
+                    <a href="#" class="btn-resource">Access Materials</a>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg></div>
+                    <h3>Database Systems</h3>
+                    <p>SQL scripts, ER diagrams, and project files</p>
+                    <a href="#" class="btn-resource">Access Materials</a>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="m9.17 14.83 1.41 1.41L15 12l-4.42-4.24-1.41 1.41L12.17 12l-3 2.83z"/>
+                        </svg></div>
+                    <h3>Web Development</h3>
+                    <p>HTML, CSS, JavaScript, and framework resources</p>
+                    <a href="#" class="btn-resource">Access Materials</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lab Resources -->
+        <div class="resource-section">
+            <h2><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                </svg> Laboratory Resources</h2>
+            <div class="resource-grid">
+                <div class="resource-item">
+                    <div class="resource-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg></div>
+                    <h3>Programming Lab</h3>
+                    <p>Access to development environments and compilers</p>
+                    <a href="#" class="btn-resource">Access Lab</a>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg></div>
+                    <h3>High-Performance Computing</h3>
+                    <p>Cluster computing resources and GPU access</p>
+                    <a href="#" class="btn-resource">Access HPC</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Resources -->
+        <div class="resource-section">
+            <h2><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg> Research Resources</h2>
+            <div class="resource-grid">
+                <div class="resource-item">
+                    <div class="resource-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg></div>
+                    <h3>Research Papers</h3>
+                    <p>Department publications and research archives</p>
+                    <a href="#" class="btn-resource">Browse Papers</a>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="6"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg></div>
+                    <h3>Grant Opportunities</h3>
+                    <p>Available research grants and funding information</p>
+                    <a href="#" class="btn-resource">View Grants</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Policy Info -->
+        <div class="policy-info">
+            <h3><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <circle cx="12" cy="16" r="1"></circle>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg> Access Policy</h3>
+            <div class="policy-display">
+                <code>{{ policy }}</code>
+            </div>
+            <p class="policy-explanation">
+                This portal is protected by Attribute-Based Encryption. Only users whose attributes
+                satisfy the above policy can access these resources.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+.portal-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.portal-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.portal-icon {
+    font-size: 4rem;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portal-info h1 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.portal-info p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.access-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.access-granted {
+    background: rgba(34, 211, 165, 0.2);
+    color: var(--accent-green);
+    border: 1px solid rgba(34, 211, 165, 0.3);
+}
+
+.resource-section {
+    margin-bottom: 40px;
+}
+
+.resource-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.resource-item {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s ease;
+}
+
+.resource-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.resource-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+}
+
+.resource-item h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.resource-item p {
+    margin: 0 0 20px 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.btn-resource {
+    display: inline-block;
+    background: var(--accent-blue);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-resource:hover {
+    background: var(--accent-blue-hover);
+    transform: translateY(-1px);
+}
+
+.policy-info {
+    background: rgba(0,0,0,0.05);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 40px;
+}
+
+.policy-info h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.policy-display {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.policy-display code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    background: none;
+    padding: 0;
+}
+
+.policy-explanation {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+</style>
+{% endblock %}

@@ -34,6 +34,71 @@
             </button>
         </form>
 
+        <div class="register-toggle" style="margin-top: 20px; text-align: center;">
+            <button type="button" id="show-register" class="btn-register-ht">
+                <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" style="margin-right: 8px;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                Create New Account
+            </button>
+        </div>
+
+        <div id="register-form" style="display: none; margin-top: 20px;">
+            <hr style="border: none; border-top: 1px solid var(--border-glass); margin: 20px 0;">
+            <h3 style="text-align: center; margin-bottom: 20px; color: var(--text-primary);">Register New Account</h3>
+            <form method="POST" action="{{ url_for('auth.register') }}">
+                <div class="form-group">
+                    <label class="form-label-ht" for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" name="name" class="form-control-ht" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label-ht" for="reg-username">Username</label>
+                    <input type="text" id="reg-username" name="username" class="form-control-ht" placeholder="Choose a username" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label-ht" for="reg-password">Password</label>
+                    <input type="password" id="reg-password" name="password" class="form-control-ht" placeholder="Choose a password" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label-ht" for="reg-department">Department</label>
+                    <select id="reg-department" name="department" class="form-control-ht" required>
+                        <option value="">Select Department</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                        <option value="Business Administration">Business Administration</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label-ht" for="reg-role">Role</label>
+                    <select id="reg-role" name="role" class="form-control-ht" required>
+                        <option value="Student">Student</option>
+                        <option value="Faculty">Faculty</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Network Admin">Network Admin</option>
+                        <option value="IT Support">IT Support</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary-ht w-100" style="justify-content:center;padding:12px;">
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg> Register
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <button type="button" id="show-login" class="btn-link-ht">Back to Login</button>
+            </div>
+        </div>
+
         <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--border-glass);">
             <p style="font-size:0.75rem;color:var(--text-muted);text-align:center;line-height:1.6;">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
