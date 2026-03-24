@@ -55,7 +55,7 @@ def register():
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "").strip()
     department = request.form.get("department", "").strip()
-    role = request.form.get("role", "Student").strip()
+    role = "Student"  # Hardcoded default role for all new registrations
 
     if not all([name, username, password, department]):
         flash("All fields are required.", "danger")
