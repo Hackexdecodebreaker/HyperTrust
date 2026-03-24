@@ -27,13 +27,13 @@ Because ABE algorithms are computationally intensive and operate on fixed-size b
 During decryption, `crypto_utils.py` uses the user's CP-ABE key to recover the AES key, which is then used to safely decrypt the underlying AES-GCM token payload.
 
 ### 3. Application Routing & Portals (`routes/user.py`, `app.py`)
-- **`/request-access`**: The core endpoint where users attempt to generate a Wi-Fi token. The server physically encrypts a new token string under the current active constraint `WIFI_POLICY`. The server then asks the user's private key to decrypt it. If decrypted, the user receives their access token.
+- **`/request-access`**: The core endpoint where users attempt to generate a Wi-Fi token. The server encrypts a new token string under the current active constraint `WIFI_POLICY` (default is `paid:true`, universally granting paid users access regardless of department). If the user's keys decrypt it, they get access.
 - **`/portal/<portal_name>`**: A dynamic route that secures specific web pages. To guarantee these portals are secure, the route locally encrypts a dummy payload under the system policy and attempts to decrypt it with the user's key. If it passes the mathematical hurdle, the Flask application renders the requested HTML portal securely.
 
 ### 4. Database Layer (`db.py`, `schema.sql`)
 The system utilizes a SQLite database for lightweight, rapid access control state:
-- **`system_settings`**: Stores the cryptographic `PK` and `MSK` blobs globally.
-- **`users`**: Stores login hashes and roles.
+- **`system_settings`**: Stores the cryptographic `PK` and `MSK` blobs globally, along with dynamic, real-time configuration like the instantaneous `wifi_policy`.
+- **`users`**: Stores login hashes and roles. (Note: New registrations are implicitly restricted to the `Student` role for security).
 - **`user_keys`**: Securely houses the compiled CP-ABE private keys for specific users.
 - **`access_tokens`**: Keeps an immutable ledger of the actual encrypted token bundles.
 

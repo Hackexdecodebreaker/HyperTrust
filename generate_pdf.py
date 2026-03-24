@@ -57,14 +57,14 @@ def create_pdf(output_path):
     
     <p><b>Storing Policies</b></p>
     <ul>
-        <li><strong>WiFi Policy</strong>: The default access rule for campus WiFi is stored in the system configuration. The admin can update it in real-time.</li>
+        <li><strong>WiFi Policy</strong>: The default access rule for campus WiFi is stored globally as <code>paid:true</code>. Validated users who have paid may access it regardless of department. Admin updates take effect instantaneously.</li>
         <li><strong>Resource Policies</strong>: Specific portals (e.g., Confidential Docs, Engineering Labs) have their own strict logic gates.</li>
     </ul>
     
     <h2>4. User Registration & Roles</h2>
     <p>When a new user registers on the platform:</p>
     <ol>
-        <li>They are automatically assigned the <strong>Student</strong> role (immutable at registration).</li>
+        <li>They are automatically assigned the <strong>Student</strong> role (this is strictly enforced and cannot be changed during registration).</li>
         <li>They select their department.</li>
         <li>Their payment status defaults to false.</li>
         <li>A new CP-ABE key is immediately generated containing the attributes role:student, dept:[their_dept], and paid:false.</li>

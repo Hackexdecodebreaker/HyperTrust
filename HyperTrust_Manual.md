@@ -22,12 +22,12 @@ HyperTrust utilizes a **Hybrid Encryption** model for maximum performance and se
 - **CP-ABE (Asymmetric Policy Encryption)**: The randomly generated AES key is then encrypted using the CP-ABE policy.
 
 **Storing Policies**
-- **WiFi Policy**: The default access rule for campus WiFi is stored in the system configuration. The admin can update it in real-time.
+- **WiFi Policy**: The default access rule for campus WiFi is strictly `paid:true`. Any user validated as having paid may access it regardless of department. Admin updates take effect instantly.
 - **Resource Policies**: Specific portals (e.g., Confidential Docs, Engineering Labs) have their own strict logic gates.
 
 ## 4. User Registration & Roles
 When a new user registers on the platform:
-1. They are automatically assigned the **Student** role (immutable at registration).
+1. They are automatically assigned the **Student** role (this is enforced and cannot be manipulated during user registration).
 2. They select their department.
 3. Their payment status defaults to false.
 4. A new CP-ABE key is immediately generated containing the attributes role:student, dept:[their_dept], and paid:false.
